@@ -1,18 +1,14 @@
 part of 'scrabbler_cubit.dart';
 
-@immutable
-abstract class ScrabblerState {}
-
-class ScrabblerInitial extends ScrabblerState {}
-
-class ScrabblerLoading extends ScrabblerState {}
-
-class ScrabblerLoaded extends ScrabblerState {
-  ScrabblerLoaded({
-    required this.words,
-    required this.charItems,
-  });
-
-  final List<ScrabblerWordItem> words;
-  final List<ScrabblerCharItem> charItems;
+@freezed
+class ScrabblerState with _$ScrabblerState {
+  const factory ScrabblerState.initial() = _Initial;
+  const factory ScrabblerState.loading() = _Loading;
+  const factory ScrabblerState.loaded({
+    required List<ScrabblerWordItem> words,
+    required List<ScrabblerCharItem> charItems,
+  }) = _Loaded;
+  const factory ScrabblerState.error({
+    required String message,
+  }) = _Error;
 }

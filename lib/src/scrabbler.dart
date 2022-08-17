@@ -4,25 +4,32 @@ import 'package:scrabbler/cubit/scrabbler_cubit.dart';
 import 'package:scrabbler/src/scrabbler_char_item.dart';
 import 'package:scrabbler/src/scrabbler_config.dart';
 
+const _defaultBorderSide = BorderSide();
+
 class Scrabbler extends StatelessWidget {
   const Scrabbler({
-    Key? key,
+    super.key,
     this.config,
-  }) : super(key: key);
+    required this.words,
+  });
 
   final ScrabblerConfig? config;
+  final List<String> words;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ScrabblerCubit(config: config),
-      child: _Scrabbler(),
+      create: (context) => ScrabblerCubit(
+        config: config,
+        words: words,
+      ),
+      child: const _Scrabbler(),
     );
   }
 }
 
 class _Scrabbler extends StatefulWidget {
-  const _Scrabbler({Key? key}) : super(key: key);
+  const _Scrabbler();
 
   @override
   State<_Scrabbler> createState() => _ScrabblerState();
@@ -36,23 +43,33 @@ class _ScrabblerState extends State<_Scrabbler> {
     return BlocBuilder<ScrabblerCubit, ScrabblerState>(
       bloc: _scrabblerCubit,
       builder: (context, state) {
-        if (state is ScrabblerLoaded) {
-          return ListView(
+        return state.maybeWhen(
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          loaded: (words, charItems) => ListView(
             children: [
-              for (final _wordItem in state.words)
+              for (final _wordItem in words)
                 Row(
                   children: [
                     for (final character in _wordItem.characters)
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
+                            vertical: 2.0,
                           ),
                           child: AspectRatio(
                             aspectRatio: 1,
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
+                                border: Border(
+                                  bottom: _defaultBorderSide,
+                                  left: _defaultBorderSide,
+                                  right: _wordItem.characters.last == character
+                                      ? _defaultBorderSide
+                                      : BorderSide.none,
+                                  top: _defaultBorderSide,
+                                ),
                               ),
                               child: character.correct
                                   ? Center(
@@ -64,7 +81,11 @@ class _ScrabblerState extends State<_Scrabbler> {
                                       ),
                                     )
                                   : DragTarget<ScrabblerCharItem>(
-                                      builder: (context, candidateData, rejectedData) {
+                                      builder: (
+                                        context,
+                                        candidateData,
+                                        rejectedData,
+                                      ) {
                                         return const SizedBox();
                                       },
                                       onWillAccept: (data) {
@@ -76,7 +97,6 @@ class _ScrabblerState extends State<_Scrabbler> {
                                         }
                                         return false;
                                       },
-                                      onMove: (details) => print(details),
                                       onAccept: (data) {
                                         _scrabblerCubit.onCharItemDropped(
                                           data,
@@ -95,48 +115,53 @@ class _ScrabblerState extends State<_Scrabbler> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                 ),
-                itemCount: state.charItems.length,
+                itemCount: charItems.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Draggable<ScrabblerCharItem>(
-                      dragAnchorStrategy: (draggable, context, position) {
-                        return childDragAnchorStrategy(draggable, context, position);
-                      },
-                      data: state.charItems[index],
+                      dragAnchorStrategy: childDragAnchorStrategy,
+                      data: charItems[index],
                       feedback: Material(
                         child: Container(
                           height: 40.0,
                           width: 40.0,
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
+                            border: Border.all(),
                             borderRadius: BorderRadius.circular(5.0),
                           ),
-                          child:
-                              Center(child: Text('${state.charItems[index].char.toUpperCase()}')),
+                          child: Center(
+                            child: Text(
+                              charItems[index].char.toUpperCase(),
+                            ),
+                          ),
                         ),
                       ),
                       childWhenDragging: Container(),
-                      child: Container(
-                        height: 40.0,
-                        width: 40.0,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Center(child: Text('${state.charItems[index].char.toUpperCase()}')),
-                      ),
+                      child: !charItems[index].correct
+                          ? Container(
+                              height: 40.0,
+                              width: 40.0,
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  charItems[index].char.toUpperCase(),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ),
                   );
                 },
               ),
             ],
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
+          ),
+          orElse: SizedBox.new,
         );
       },
     );

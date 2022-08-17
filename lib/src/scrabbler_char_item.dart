@@ -1,6 +1,5 @@
-import 'package:scrabbler/src/scrabbler_char_item.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'scrabbler_char_item.freezed.dart';
 

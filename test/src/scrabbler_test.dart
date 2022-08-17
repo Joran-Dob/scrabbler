@@ -5,7 +5,14 @@ import 'package:scrabbler/scrabbler.dart';
 void main() {
   group('Scrabbler', () {
     test('can be instantiated', () {
-      expect(Scrabbler(), isNotNull);
+      expect(
+        Scrabbler(
+          words: const [
+            'BLACK',
+          ],
+        ),
+        isNotNull,
+      );
     });
   });
 }
