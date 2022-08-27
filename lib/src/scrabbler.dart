@@ -47,70 +47,69 @@ class _ScrabblerState extends State<_Scrabbler> {
           loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
-          loaded: (words, charItems) => ListView(
+          loaded: (words, charItems, currentWordIndex, currentCharItems) => ListView(
             children: [
-              for (final _wordItem in words)
-                Row(
-                  children: [
-                    for (final character in _wordItem.characters)
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 2.0,
-                          ),
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: _defaultBorderSide,
-                                  left: _defaultBorderSide,
-                                  right: _wordItem.characters.last == character
-                                      ? _defaultBorderSide
-                                      : BorderSide.none,
-                                  top: _defaultBorderSide,
-                                ),
+              Row(
+                children: [
+                  for (final character in words[currentWordIndex].characters)
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 2.0,
+                        ),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: _defaultBorderSide,
+                                left: _defaultBorderSide,
+                                right: words[currentWordIndex].characters.last == character
+                                    ? _defaultBorderSide
+                                    : BorderSide.none,
+                                top: _defaultBorderSide,
                               ),
-                              child: character.correct
-                                  ? Center(
-                                      child: Text(
-                                        character.char,
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                        ),
+                            ),
+                            child: character.correct
+                                ? Center(
+                                    child: Text(
+                                      character.char,
+                                      style: const TextStyle(
+                                        fontSize: 24,
                                       ),
-                                    )
-                                  : DragTarget<ScrabblerCharItem>(
-                                      builder: (
-                                        context,
-                                        candidateData,
-                                        rejectedData,
-                                      ) {
-                                        return const SizedBox();
-                                      },
-                                      onWillAccept: (data) {
-                                        if (data != null) {
-                                          return _scrabblerCubit.correctCharItemDropped(
-                                            data,
-                                            character,
-                                          );
-                                        }
-                                        return false;
-                                      },
-                                      onAccept: (data) {
-                                        _scrabblerCubit.onCharItemDropped(
+                                    ),
+                                  )
+                                : DragTarget<ScrabblerCharItem>(
+                                    builder: (
+                                      context,
+                                      candidateData,
+                                      rejectedData,
+                                    ) {
+                                      return const SizedBox();
+                                    },
+                                    onWillAccept: (data) {
+                                      if (data != null) {
+                                        return _scrabblerCubit.correctCharItemDropped(
                                           data,
                                           character,
-                                          _wordItem,
                                         );
-                                      },
-                                    ),
-                            ),
+                                      }
+                                      return false;
+                                    },
+                                    onAccept: (data) {
+                                      _scrabblerCubit.onCharItemDropped(
+                                        data,
+                                        character,
+                                        words[currentWordIndex],
+                                      );
+                                    },
+                                  ),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
+              ),
               GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
@@ -123,7 +122,7 @@ class _ScrabblerState extends State<_Scrabbler> {
                     padding: const EdgeInsets.all(8.0),
                     child: Draggable<ScrabblerCharItem>(
                       dragAnchorStrategy: childDragAnchorStrategy,
-                      data: charItems[index],
+                      data: currentCharItems[index],
                       feedback: Material(
                         child: Container(
                           height: 40.0,
@@ -134,13 +133,13 @@ class _ScrabblerState extends State<_Scrabbler> {
                           ),
                           child: Center(
                             child: Text(
-                              charItems[index].char.toUpperCase(),
+                              currentCharItems[index].char,
                             ),
                           ),
                         ),
                       ),
                       childWhenDragging: Container(),
-                      child: !charItems[index].correct
+                      child: !_scrabblerCubit.currentCharItems[index].correct
                           ? Container(
                               height: 40.0,
                               width: 40.0,
@@ -150,7 +149,7 @@ class _ScrabblerState extends State<_Scrabbler> {
                               ),
                               child: Center(
                                 child: Text(
-                                  charItems[index].char.toUpperCase(),
+                                  currentCharItems[index].char.toUpperCase(),
                                 ),
                               ),
                             )

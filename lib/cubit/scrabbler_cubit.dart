@@ -23,7 +23,10 @@ class ScrabblerCubit extends Cubit<ScrabblerState> {
 
   final ScrabblerConfig? _config;
   List<ScrabblerWordItem> words = [];
-  List<ScrabblerCharItem> charItems = [];
+  Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems = {};
+  int currentWordIndex = 0;
+
+  List<ScrabblerCharItem> get currentCharItems => charItems[words[currentWordIndex]] ?? [];
 
   void _init() {
     emit(const ScrabblerState.loading());
@@ -32,26 +35,30 @@ class ScrabblerCubit extends Cubit<ScrabblerState> {
       ScrabblerState.loaded(
         words: words,
         charItems: charItems,
+        currentCharItems: currentCharItems,
+        currentWordIndex: currentWordIndex,
       ),
     );
   }
 
   void _loadWordItems() {
     for (final word in _wordValues) {
-      words.add(
-        ScrabblerWordItem(
-          content: word,
-          characters: word.characters.map((e) {
-            final charItem = ScrabblerCharItem(
-              char: e,
-            );
-            charItems.add(charItem);
-            return charItem;
-          }).toList(),
-        ),
+      final characters = word.characters.toList();
+      final wordCharItems = <ScrabblerCharItem>[];
+      final wordItem = ScrabblerWordItem(
+        content: word,
+        characters: characters.map((e) {
+          final charItem = ScrabblerCharItem(
+            char: e,
+          );
+          wordCharItems.add(charItem);
+          return charItem;
+        }).toList(),
       );
+      wordCharItems.shuffle();
+      charItems[wordItem] = wordCharItems;
+      words.add(wordItem);
     }
-    charItems.shuffle();
   }
 
   void onCharItemDropped(
@@ -63,25 +70,30 @@ class ScrabblerCubit extends Cubit<ScrabblerState> {
     if (correctCharItemDropped(charItem, charItemDropped)) {
       final wordIndex = words.indexOf(wordItem);
       final charIndex = words[wordIndex].characters.indexOf(charItem);
-      final charItemListIndex = charItems.indexOf(charItemDropped);
+      final charItemListIndex = currentCharItems.indexOf(charItemDropped);
       words[wordIndex].characters[charIndex] = charItem.copyWith(
         correct: true,
       );
-      charItems[charItemListIndex] = charItemDropped.copyWith(
+      currentCharItems[charItemListIndex] = charItemDropped.copyWith(
         correct: true,
       );
-      _checkIfAllCorrect();
+      _checkIfCorrect();
       emit(
         ScrabblerState.loaded(
           words: words,
           charItems: charItems,
+          currentCharItems: currentCharItems,
+          currentWordIndex: currentWordIndex,
         ),
       );
     }
   }
 
-  void _checkIfAllCorrect() {
-    if (words.every((element) => element.characters.every((e) => e.correct))) {
+  void _checkIfCorrect() {
+    if (currentCharItems.every((element) => element.correct) &&
+        currentWordIndex < words.length - 1) {
+      currentWordIndex++;
+    } else if (words.every((element) => element.characters.every((e) => e.correct))) {
       _config?.onGameCompleted?.call();
     }
   }

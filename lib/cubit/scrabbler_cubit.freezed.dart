@@ -21,7 +21,10 @@ mixin _$ScrabblerState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)
         loaded,
     required TResult Function(String message) error,
   }) =>
@@ -31,7 +34,10 @@ mixin _$ScrabblerState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
   }) =>
@@ -41,7 +47,10 @@ mixin _$ScrabblerState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -133,7 +142,10 @@ class _$_Initial implements _Initial {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)
         loaded,
     required TResult Function(String message) error,
   }) {
@@ -146,7 +158,10 @@ class _$_Initial implements _Initial {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
   }) {
@@ -159,7 +174,10 @@ class _$_Initial implements _Initial {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -254,7 +272,10 @@ class _$_Loading implements _Loading {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)
         loaded,
     required TResult Function(String message) error,
   }) {
@@ -267,7 +288,10 @@ class _$_Loading implements _Loading {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
   }) {
@@ -280,7 +304,10 @@ class _$_Loading implements _Loading {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -337,7 +364,11 @@ abstract class _Loading implements ScrabblerState {
 abstract class _$$_LoadedCopyWith<$Res> {
   factory _$$_LoadedCopyWith(_$_Loaded value, $Res Function(_$_Loaded) then) =
       __$$_LoadedCopyWithImpl<$Res>;
-  $Res call({List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems});
+  $Res call(
+      {List<ScrabblerWordItem> words,
+      Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+      int currentWordIndex,
+      List<ScrabblerCharItem> currentCharItems});
 }
 
 /// @nodoc
@@ -353,6 +384,8 @@ class __$$_LoadedCopyWithImpl<$Res> extends _$ScrabblerStateCopyWithImpl<$Res>
   $Res call({
     Object? words = freezed,
     Object? charItems = freezed,
+    Object? currentWordIndex = freezed,
+    Object? currentCharItems = freezed,
   }) {
     return _then(_$_Loaded(
       words: words == freezed
@@ -362,6 +395,14 @@ class __$$_LoadedCopyWithImpl<$Res> extends _$ScrabblerStateCopyWithImpl<$Res>
       charItems: charItems == freezed
           ? _value._charItems
           : charItems // ignore: cast_nullable_to_non_nullable
+              as Map<ScrabblerWordItem, List<ScrabblerCharItem>>,
+      currentWordIndex: currentWordIndex == freezed
+          ? _value.currentWordIndex
+          : currentWordIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      currentCharItems: currentCharItems == freezed
+          ? _value._currentCharItems
+          : currentCharItems // ignore: cast_nullable_to_non_nullable
               as List<ScrabblerCharItem>,
     ));
   }
@@ -372,9 +413,12 @@ class __$$_LoadedCopyWithImpl<$Res> extends _$ScrabblerStateCopyWithImpl<$Res>
 class _$_Loaded implements _Loaded {
   const _$_Loaded(
       {required final List<ScrabblerWordItem> words,
-      required final List<ScrabblerCharItem> charItems})
+      required final Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+      required this.currentWordIndex,
+      required final List<ScrabblerCharItem> currentCharItems})
       : _words = words,
-        _charItems = charItems;
+        _charItems = charItems,
+        _currentCharItems = currentCharItems;
 
   final List<ScrabblerWordItem> _words;
   @override
@@ -383,16 +427,25 @@ class _$_Loaded implements _Loaded {
     return EqualUnmodifiableListView(_words);
   }
 
-  final List<ScrabblerCharItem> _charItems;
+  final Map<ScrabblerWordItem, List<ScrabblerCharItem>> _charItems;
   @override
-  List<ScrabblerCharItem> get charItems {
+  Map<ScrabblerWordItem, List<ScrabblerCharItem>> get charItems {
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_charItems);
+    return EqualUnmodifiableMapView(_charItems);
+  }
+
+  @override
+  final int currentWordIndex;
+  final List<ScrabblerCharItem> _currentCharItems;
+  @override
+  List<ScrabblerCharItem> get currentCharItems {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_currentCharItems);
   }
 
   @override
   String toString() {
-    return 'ScrabblerState.loaded(words: $words, charItems: $charItems)';
+    return 'ScrabblerState.loaded(words: $words, charItems: $charItems, currentWordIndex: $currentWordIndex, currentCharItems: $currentCharItems)';
   }
 
   @override
@@ -402,14 +455,20 @@ class _$_Loaded implements _Loaded {
             other is _$_Loaded &&
             const DeepCollectionEquality().equals(other._words, _words) &&
             const DeepCollectionEquality()
-                .equals(other._charItems, _charItems));
+                .equals(other._charItems, _charItems) &&
+            const DeepCollectionEquality()
+                .equals(other.currentWordIndex, currentWordIndex) &&
+            const DeepCollectionEquality()
+                .equals(other._currentCharItems, _currentCharItems));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_words),
-      const DeepCollectionEquality().hash(_charItems));
+      const DeepCollectionEquality().hash(_charItems),
+      const DeepCollectionEquality().hash(currentWordIndex),
+      const DeepCollectionEquality().hash(_currentCharItems));
 
   @JsonKey(ignore: true)
   @override
@@ -422,11 +481,14 @@ class _$_Loaded implements _Loaded {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)
         loaded,
     required TResult Function(String message) error,
   }) {
-    return loaded(words, charItems);
+    return loaded(words, charItems, currentWordIndex, currentCharItems);
   }
 
   @override
@@ -435,11 +497,14 @@ class _$_Loaded implements _Loaded {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
   }) {
-    return loaded?.call(words, charItems);
+    return loaded?.call(words, charItems, currentWordIndex, currentCharItems);
   }
 
   @override
@@ -448,13 +513,16 @@ class _$_Loaded implements _Loaded {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(words, charItems);
+      return loaded(words, charItems, currentWordIndex, currentCharItems);
     }
     return orElse();
   }
@@ -500,10 +568,14 @@ class _$_Loaded implements _Loaded {
 abstract class _Loaded implements ScrabblerState {
   const factory _Loaded(
       {required final List<ScrabblerWordItem> words,
-      required final List<ScrabblerCharItem> charItems}) = _$_Loaded;
+      required final Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+      required final int currentWordIndex,
+      required final List<ScrabblerCharItem> currentCharItems}) = _$_Loaded;
 
   List<ScrabblerWordItem> get words;
-  List<ScrabblerCharItem> get charItems;
+  Map<ScrabblerWordItem, List<ScrabblerCharItem>> get charItems;
+  int get currentWordIndex;
+  List<ScrabblerCharItem> get currentCharItems;
   @JsonKey(ignore: true)
   _$$_LoadedCopyWith<_$_Loaded> get copyWith =>
       throw _privateConstructorUsedError;
@@ -574,7 +646,10 @@ class _$_Error implements _Error {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)
         loaded,
     required TResult Function(String message) error,
   }) {
@@ -587,7 +662,10 @@ class _$_Error implements _Error {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
   }) {
@@ -600,7 +678,10 @@ class _$_Error implements _Error {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(
-            List<ScrabblerWordItem> words, List<ScrabblerCharItem> charItems)?
+            List<ScrabblerWordItem> words,
+            Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+            int currentWordIndex,
+            List<ScrabblerCharItem> currentCharItems)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),

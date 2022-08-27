@@ -6,7 +6,9 @@ class ScrabblerState with _$ScrabblerState {
   const factory ScrabblerState.loading() = _Loading;
   const factory ScrabblerState.loaded({
     required List<ScrabblerWordItem> words,
-    required List<ScrabblerCharItem> charItems,
+    required Map<ScrabblerWordItem, List<ScrabblerCharItem>> charItems,
+    required int currentWordIndex,
+    required List<ScrabblerCharItem> currentCharItems,
   }) = _Loaded;
   const factory ScrabblerState.error({
     required String message,
